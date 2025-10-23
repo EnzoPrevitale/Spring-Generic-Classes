@@ -1,19 +1,18 @@
 package com.example.demo.controllers;
 
+import com.example.demo.models.Model;
 import com.example.demo.services.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class Controller<M,
+public class Controller<
+        M extends Model<PK>,
         PK,
         R extends JpaRepository<M, PK>,
         D,
@@ -38,8 +37,32 @@ public class Controller<M,
     }
 
     @PostMapping
-    public ResponseEntity<M> post(@RequestBody D dto) {
+    public ResponseEntity<M> post(@RequestBody D dto) throws URISyntaxException {
         M model = service.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(model);
+        return ResponseEntity.created(new URI("/" + model.getId())).body(model);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<M> put(@PathVariable PK id, @RequestBody D dto) {
+        return service
+                .update(id, dto)
+                .map(m -> ResponseEntity.accepted().body(m))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<M> patch(@PathVariable PK id, @RequestBody D dto) {
+        return service
+                .updatePartially(id, dto)
+                .map(m -> ResponseEntity.accepted().body(m))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable PK id) {
+        return service
+                .delete(id)
+                .map(_ -> ResponseEntity.noContent().build())
+                .orElse(ResponseEntity.notFound().build());
     }
 }

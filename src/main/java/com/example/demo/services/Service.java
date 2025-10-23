@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.mappers.Mapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -34,8 +35,9 @@ public class Service<M, PK ,R extends JpaRepository<M, PK>, D> {
         Optional<M> model = repository.findById(id);
         return model
                 .map(m -> {
-                   m = mapper.toModel(dto);
-                   return repository.save(m);
+                    BeanUtils.copyProperties(dto, m);
+                    mapper.updateModel(dto, m);
+                    return repository.save(m);
                 });
     }
 
@@ -43,7 +45,7 @@ public class Service<M, PK ,R extends JpaRepository<M, PK>, D> {
         Optional<M> model = repository.findById(id);
         return model
                 .map(m -> {
-                    m = mapper.toModelPartially(dto, m);
+                    mapper.updateModelPartially(dto, m);
                     return repository.save(m);
                 });
     }
