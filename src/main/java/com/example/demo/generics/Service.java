@@ -1,12 +1,10 @@
-package com.example.demo.services;
+package com.example.demo.generics;
 
-import com.example.demo.mappers.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class Service<M, PK ,R extends JpaRepository<M, PK>, D> {
 

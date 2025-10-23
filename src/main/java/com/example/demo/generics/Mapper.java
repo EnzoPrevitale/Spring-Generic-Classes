@@ -1,4 +1,4 @@
-package com.example.demo.mappers;
+package com.example.demo.generics;
 
 public interface Mapper<D, M> {
     M toModel(D dto);

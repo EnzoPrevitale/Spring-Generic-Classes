@@ -1,9 +1,6 @@
-package com.example.demo.controllers;
+package com.example.demo.generics;
 
-import com.example.demo.models.Model;
-import com.example.demo.services.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +9,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public class Controller<
-        M extends Model<PK>,
-        PK,
-        R extends JpaRepository<M, PK>,
-        D,
-        S extends Service<M, PK, R, D>> {
+        M extends Model<PK>, PK, R extends JpaRepository<M, PK>, D, S extends Service<M, PK, R, D>> {
 
     private final S service;
 

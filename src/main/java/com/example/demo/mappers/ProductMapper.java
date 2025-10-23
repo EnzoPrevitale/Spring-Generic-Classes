@@ -1,13 +1,14 @@
 package com.example.demo.mappers;
 
 import com.example.demo.dtos.ProductDto;
+import com.example.demo.generics.Mapper;
 import com.example.demo.models.Product;
 import com.example.demo.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductMapper implements Mapper<ProductDto, Product>{
+public class ProductMapper implements Mapper<ProductDto, Product> {
 
     @Autowired
     private ProductRepository repository;

@@ -1,4 +1,4 @@
-package com.example.demo.models;
+package com.example.demo.generics;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,8 +11,17 @@ public class Model<PK> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private PK id;
+    private Boolean active = true;
 
     public PK getId() {
         return id;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import com.example.demo.generics.Model;
 import jakarta.persistence.*;
 
 @Entity
