@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class Service<M, PK ,R extends JpaRepository<M, PK>, D> {
+public class Service<M extends Model<PK>, PK ,R extends Repository<M, PK>, D> {
 
     private final R repository;
     private final Mapper<D, M> mapper;
@@ -52,7 +52,7 @@ public class Service<M, PK ,R extends JpaRepository<M, PK>, D> {
         Optional<M> model = repository.findById(id);
         return model
                 .map(m -> {
-                    repository.delete(m);
+                    repository.softDelete(m);
                     return m;
                 });
     }

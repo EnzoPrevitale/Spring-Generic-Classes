@@ -23,6 +23,6 @@ public interface Repository<M extends Model<PK>, PK> extends JpaRepository<M, PK
 
     @Modifying
     @Transactional
-    @Query("UPDATE #{#entityName} m SET m.active = FALSE WHERE m.id = :id")
-    void softDelete(@Param("id") PK id);
+    @Query("UPDATE #{#entityName} m SET m.active = FALSE WHERE m = :model")
+    void softDelete(@Param("model") M model);
 }

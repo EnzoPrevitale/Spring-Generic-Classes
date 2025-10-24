@@ -7,14 +7,19 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 public class Controller<
-        M extends Model<PK>, PK, R extends JpaRepository<M, PK>, D, S extends Service<M, PK, R, D>> {
+        M extends Model<PK>, PK, R extends JpaRepository<M, PK> & Repository<M, PK>, D, S extends Service<M, PK, R, D>> {
 
     private final S service;
+    private final SqlConverter<M, PK> converter;
+    private final Class<M> modelClass;
 
-    public Controller(S service) {
+    public Controller(S service, SqlConverter<M, PK> converter, Class<M> modelClass) {
         this.service = service;
+        this.converter = converter;
+        this.modelClass = modelClass;
     }
 
     @GetMapping
@@ -27,6 +32,11 @@ public class Controller<
         return service.read(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/fields")
+    public Map<String, String> getFields() {
+        return converter.convert(modelClass);
     }
 
     @PostMapping
