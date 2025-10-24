@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 @Table(name="product")
 public class Product extends Model<Long> {
 
+    @Column(name="name", nullable = false)
     private String name;
     private Float price;
 

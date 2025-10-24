@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/products")
 public class ProductController extends Controller<Product, Long, ProductRepository, ProductDto, ProductService> {
-    public ProductController(ProductService service, SqlConverter<Product, Long> converter) {
-        super(service, converter, Product.class);
+    public ProductController(ProductService service) throws NoSuchFieldException {
+        super(service, Product.class, Long.class);
     }
 }

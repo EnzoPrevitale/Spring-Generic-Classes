@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -13,13 +15,15 @@ public class Controller<
         M extends Model<PK>, PK, R extends JpaRepository<M, PK> & Repository<M, PK>, D, S extends Service<M, PK, R, D>> {
 
     private final S service;
-    private final SqlConverter<M, PK> converter;
     private final Class<M> modelClass;
+    private final Class<PK> pkClass;
+    private final SqlConverter<M, PK> converter;
 
-    public Controller(S service, SqlConverter<M, PK> converter, Class<M> modelClass) {
+    public Controller(S service, Class<M> modelClass, Class<PK> pkClass) throws NoSuchFieldException {
         this.service = service;
-        this.converter = converter;
         this.modelClass = modelClass;
+        this.pkClass = pkClass;
+        this.converter = new SqlConverter<>(modelClass, pkClass);
     }
 
     @GetMapping
@@ -35,8 +39,8 @@ public class Controller<
     }
 
     @GetMapping("/fields")
-    public Map<String, String> getFields() {
-        return converter.convert(modelClass);
+    public String getFields() {
+        return converter.build();
     }
 
     @PostMapping
