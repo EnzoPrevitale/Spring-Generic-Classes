@@ -15,14 +15,10 @@ public class Controller<
         M extends Model<PK>, PK, R extends JpaRepository<M, PK> & Repository<M, PK>, D, S extends Service<M, PK, R, D>> {
 
     private final S service;
-    private final Class<M> modelClass;
-    private final Class<PK> pkClass;
     private final SqlConverter<M, PK> converter;
 
-    public Controller(S service, Class<M> modelClass, Class<PK> pkClass) throws NoSuchFieldException {
+    public Controller(S service, Class<M> modelClass, Class<PK> pkClass) {
         this.service = service;
-        this.modelClass = modelClass;
-        this.pkClass = pkClass;
         this.converter = new SqlConverter<>(modelClass, pkClass);
     }
 
