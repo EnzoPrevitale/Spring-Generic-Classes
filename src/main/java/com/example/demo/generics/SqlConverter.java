@@ -33,8 +33,8 @@ public class SqlConverter<M extends Model<PK>, PK> {
         return constraints;
     }
 
-    public Map<String, Object> getFields(Class<M> model) {
-        Map<String, Object> fields = new LinkedHashMap<>();
+    public Map<String, List<String>> getFields(Class<M> model) {
+        Map<String, List<String>> fields = new LinkedHashMap<>();
 
         for(var field : model.getSuperclass().getDeclaredFields()) {
             fields.put(field.getName(), getConstraints(field));
@@ -50,12 +50,28 @@ public class SqlConverter<M extends Model<PK>, PK> {
     public String build() {
         StringBuilder builder = new StringBuilder("CREATE TABLE ");
         builder.append(getTable());
-        builder.append("(\n");
+        builder.append("(\n    ");
         var fields = getFields(modelClass);
         for(var field : fields.keySet()) {
-            builder.append(field);
-            System.out.println(fields.get(field).getClass());
-            builder.append(",\n");
+            var constraints = getFields(modelClass).get(field);
+            System.out.println(constraints);
+            builder.append(field).append(" ");
+
+            if(constraints.contains("Long")) builder.append("BIGINT");
+            else if(constraints.contains("Integer")) builder.append("INTEGER");
+            else if(constraints.contains("Byte")) builder.append("SMALLINT");
+            else if(constraints.contains("Float")) builder.append("REAL");
+
+            else if(constraints.contains("Boolean")) builder.append("BOOL");
+
+            if (constraints.contains("String")) builder.append("VARCHAR");
+
+            if (constraints.contains("Id()")) builder.append(" PRIMARY KEY");
+            if (constraints.contains("GeneratedValue(strategy=IDENTITY, generator=\"\")")) builder.append(" AUTO_INCREMENT");
+
+            if(constraints.getFirst().contains("nullable=false")) builder.append(" NOT NULL");
+
+            builder.append(",\n    ");
         }
         builder.append(");\n");
         builder.append(getFields(modelClass));
